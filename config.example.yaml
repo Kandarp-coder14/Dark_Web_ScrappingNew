@@ -11,8 +11,15 @@ crawl:
   max_depth: 1
   timeout_seconds: 25
   respect_allowed_domains: true
+  # Safe default: avoid making network requests unless explicitly disabled
+  dry_run: true
   allowed_domains:
     - "exampleonion.org"
     - "example.org"
   seed_urls:
     - "https://example.org"
+
+# SSL verification options
+verify_ssl: true
+# Optional path to a CA bundle file to trust (set only if you understand the security implications)
+# ca_bundle: "C:/path/to/ca-bundle.crt"

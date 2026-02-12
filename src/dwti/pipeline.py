@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from .config import AppConfig
 from .parser import parse_html
-from .scraper import allowed, fetch_url
+from .scraper import allowed, fetch_url, FetchResult
 from .storage import ensure_db, save_indicators, save_page
 from .tor_client import build_session
 
@@ -24,6 +24,16 @@ def run_pipeline(config: AppConfig) -> RunStats:
     session = build_session(config)
     conn = ensure_db(config.output_db)
 
+    # Safety checks: require an allowlist when enforcement is enabled
+    if config.crawl.respect_allowed_domains and not config.crawl.allowed_domains:
+        raise RuntimeError(
+            "crawl.respect_allowed_domains is True but crawl.allowed_domains is empty. "
+            "Populate `allowed_domains` in your config.yaml to proceed."
+        )
+
+    if config.crawl.dry_run:
+        print("DRY-RUN: no network requests will be made. Set crawl.dry_run=false to enable actual fetching.")
+
     q: deque[tuple[str, int]] = deque((url, 0) for url in config.crawl.seed_urls)
     seen: set[str] = set()
     stats = RunStats()
@@ -35,13 +45,22 @@ def run_pipeline(config: AppConfig) -> RunStats:
         seen.add(url)
 
         timestamp = datetime.now(timezone.utc).isoformat()
-        result = fetch_url(
-            session=session,
-            url=url,
-            timeout_seconds=config.crawl.timeout_seconds,
-            allowed_domains=config.crawl.allowed_domains,
-            enforce_allowlist=config.crawl.respect_allowed_domains,
-        )
+        if config.crawl.dry_run:
+            result = FetchResult(
+                url=url,
+                status_code=None,
+                content_type="",
+                html="",
+                error="dry-run mode (no network)",
+            )
+        else:
+            result = fetch_url(
+                session=session,
+                url=url,
+                timeout_seconds=config.crawl.timeout_seconds,
+                allowed_domains=config.crawl.allowed_domains,
+                enforce_allowlist=config.crawl.respect_allowed_domains,
+            )
 
         stats.visited += 1
 
