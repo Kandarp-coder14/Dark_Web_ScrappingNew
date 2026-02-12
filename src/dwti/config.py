@@ -21,6 +21,8 @@ class CrawlSettings:
     respect_allowed_domains: bool = True
     allowed_domains: list[str] = field(default_factory=list)
     seed_urls: list[str] = field(default_factory=list)
+    # When True, no network requests are made; safe default to avoid accidental crawls
+    dry_run: bool = True
 
 
 @dataclass
@@ -30,6 +32,9 @@ class AppConfig:
     output_db: str = "data/intel.db"
     tor: TorSettings = field(default_factory=TorSettings)
     crawl: CrawlSettings = field(default_factory=CrawlSettings)
+    # SSL verification controls: keep True for safety. Set a path to a CA bundle to trust.
+    verify_ssl: bool = True
+    ca_bundle: str | None = None
 
 
 
@@ -57,6 +62,7 @@ def load_config(path: str | Path) -> AppConfig:
         respect_allowed_domains=bool(crawl_raw.get("respect_allowed_domains", True)),
         allowed_domains=[str(x) for x in crawl_raw.get("allowed_domains", [])],
         seed_urls=[str(x) for x in crawl_raw.get("seed_urls", [])],
+        dry_run=bool(crawl_raw.get("dry_run", True)),
     )
 
     return AppConfig(
@@ -65,4 +71,6 @@ def load_config(path: str | Path) -> AppConfig:
         output_db=str(raw.get("output_db", "data/intel.db")),
         tor=tor,
         crawl=crawl,
+        verify_ssl=bool(raw.get("verify_ssl", True)),
+        ca_bundle=(str(raw.get("ca_bundle")) if raw.get("ca_bundle") else None),
     )

@@ -1,0 +1,2 @@
+url,fetched_at,status_code,title,excerpt,error
+https://example.org,2026-02-12T17:59:11.042789+00:00,,,,"HTTPSConnectionPool(host='example.org', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)')))"
