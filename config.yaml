@@ -1,0 +1,18 @@
+project_name: "dark-web-threat-intel"
+user_agent: "DWTI-Research-Bot/1.0"
+output_db: "data/intel.db"
+
+tor:
+  enabled: false
+  proxy_url: "socks5h://127.0.0.1:9050"
+
+crawl:
+  max_pages: 20
+  max_depth: 1
+  timeout_seconds: 25
+  respect_allowed_domains: true
+  allowed_domains:
+    - "exampleonion.org"
+    - "example.org"
+  seed_urls:
+    - "https://example.org"
