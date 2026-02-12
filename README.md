@@ -66,8 +66,9 @@ CLI (run.py / dwti.cli)
 - Extract indicators from text
 - Save page + indicators to DB
 - Enqueue discovered links if depth rules allow
-7. Pipeline returns stats (visited/success/failed/indicators)
+7. Pipeline returns stats (visited/success/failed/indicators) 
 8. CLI prints final summary and exits
+
 
 ## 6. Directory and File Details
 ```text
