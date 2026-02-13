@@ -1,4 +1,4 @@
-project_name: "dark-web-threat-intel"
+project_name: "security-threat-intel-research"
 user_agent: "DWTI-Research-Bot/1.0"
 output_db: "data/intel.db"
 
@@ -11,10 +11,11 @@ crawl:
   max_depth: 1
   timeout_seconds: 25
   respect_allowed_domains: true
-  # Safe default: avoid making network requests unless explicitly disabled
-  dry_run: true
+  # Set to false to enable real network requests for testing
+  dry_run: false
   allowed_domains:
-    - "exampleonion.org"
-    - "example.org"
+    - "haveibeenpwned.com"
+    - "virustotal.com"
   seed_urls:
-    - "https://example.org"
+    - "https://haveibeenpwned.com"
+    - "https://virustotal.com"
